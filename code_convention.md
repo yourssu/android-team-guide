@@ -18,12 +18,96 @@ override fun onCreate(...) {
 ```
 
 ## 중복코드
-- 똑같은 코드 구조가 두 군데 이상 있는 중복코드를 지양합니다. 
-- 중복 코드는 Util을 고려해봅시다.
-- 메소드의 길이는 10~20라인 정도로 작성하는 것이 좋습니다.
+중복된 코드가 있으면 추후 유지보수가 어렵고, 변경 시 실수할 가능성이 커지므로 피하는 것이 좋습니다. 공통된 로직은 Util 클래스로 빼서 재사용성을 높이는 것이 좋습니다. 또한 메소드의 길이는 너무 길면 가독성이 떨어지므로, 10~20라인 정도로 유지하는 것이 좋습니다.
+
+- 중복코드 제거 전
+    ```kotlin
+    fun showErrorDialog(context: Context) {
+        AlertDialog.Builder(context)
+            .setTitle("Error")
+            .setMessage("An error occurred.")
+            .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+            .show()
+    }
+
+    fun showSuccessDialog(context: Context) {
+        AlertDialog.Builder(context)
+            .setTitle("Success")
+            .setMessage("Operation completed successfully.")
+            .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+            .show()
+    }
+    ```
+
+- 중복코드 제거 후(use util)
+    ```kotlin
+    fun showDialog(
+        context: Context,
+        title: String,
+        message: String,
+        positiveButtonText: String = "OK"
+    ) {
+        AlertDialog.Builder(context)
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton(positiveButtonText) { dialog, _ -> dialog.dismiss() }
+            .show()
+    }
+
+    fun showErrorDialog(context: Context) {
+        showDialog(context, title = "Error", message = "An error occurred.")
+    }
+
+    fun showSuccessDialog(context: Context) {
+        showDialog(context, title = "Success", message = "Operation completed successfully.")
+    }
+    ```
+
+## Scope 함수
+Scope 함수(let, apply, run, also, with)는 객체나 로직을 간결하게 처리하고, 가독성을 높일 수 있도록 도와줍니다. 적절한 Scope 함수를 사용하는 것이 중요하며, 코드 가독성 및 명확성을 유지해야 합니다.
+```kotlin
+// let 예시
+val user = api.getUser()
+user?.let {
+    // it을 통해 user 객체를 안전하게 사용
+    println(it.name)
+}
+
+// apply 예시
+val view = TextView(context).apply {
+    text = "Hello"
+    textSize = 20f
+    setTextColor(Color.BLACK)
+}
+
+// run 예시
+val result = run {
+    val x = 10
+    val y = 20
+    x + y // 마지막 라인이 반환값
+}
+```
+
 
 ## 상수
-코드에 직접 기입된 상수는 추 후, 유지보수 때 의도를 파악하기 어려우므로, final 또는 const와 같은 변수 상수화 키워드로 상수를 변수로 네이밍 하여 의도를 표현합니다.
+하드코딩된 값은 의도를 파악하기 어렵고, 유지보수가 어려울 수 있으므로 상수로 정의해서 관리하는 것이 좋습니다. 또한, 의미 있는 이름을 부여해 코드 가독성을 높일 수 있습니다.
+
+- 하드코딩된 상수:
+    ```
+    kotlin
+    fun setTextSize(textView: TextView) {
+        textView.textSize = 16f  // 하드코딩된 숫자
+    }
+    ```
+
+- 상수화된 코드
+    ```kotlin
+    const val DEFAULT_TEXT_SIZE = 16f
+
+    fun setTextSize(textView: TextView) {
+        textView.textSize = DEFAULT_TEXT_SIZE  // 상수 사용
+    }
+    ```
 
 ## 주석의 위치
 
