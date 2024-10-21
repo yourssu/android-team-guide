@@ -1,7 +1,7 @@
 # Code Convention
 
 <aside>
-| 💡 수정이 필요한 부분에 대해서 Contribute 해주세요!
+| 💡 추가나 수정이 필요한 부분에 대해서 Contribute 해주세요!
 
 </aside>
 
@@ -71,4 +71,59 @@ fun Switch(
     modifier: Modifier = Modifier,
     switchState: SwitchState = SwitchState.Unselected
 )
+```
+
+## 7. 중괄호
+
+if, for, when 브랜치, do 및 while 문과 표현식의 경우 본문이 비어 있거나 단일 구문만 포함하는 경우에도 중괄호가 필요합니다.
+
+```kotlin
+if (string.isEmpty())
+    return  // WRONG!
+
+if (string.isEmpty()) {
+    return  // Okay
+}
+
+if (string.isEmpty()) return  // WRONG
+else doLotsOfProcessingOn(string, otherParametersHere)
+
+if (string.isEmpty()) {
+    return  // Okay
+} else {
+    doLotsOfProcessingOn(string, otherParametersHere)
+}
+```
+
+빈블럭도 중괄호 이후에는 enter해야합니다.
+
+```kotlin
+try {
+    doSomething()
+} catch (e: Exception) {} // WRONG!
+
+try {
+    doSomething()
+} catch (e: Exception) {
+} // Okay
+```
+
+
+## 8. 표현식
+
+표현식으로 사용되는 if/else 조건문에서는 전체 표현식이 한 줄에 들어가는 경우에만 중괄호를 생략할 수 있습니다.
+
+```kotlin
+val value = if (string.isEmpty()) 0 else 1  // Okay
+
+val value = if (string.isEmpty())  // WRONG!
+    0
+else
+    1
+
+val value = if (string.isEmpty()) { // Okay
+    0
+} else {
+    1
+}
 ```
