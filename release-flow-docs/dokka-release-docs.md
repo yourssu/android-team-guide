@@ -14,15 +14,15 @@ Handy에서 Dokka를 통한 코드 문서화 진행 과정 시의 기록입니�
     
   plugins {
         alias(libs.plugins.jetbrains.dokka)
-	}
+  }
 ```
 
 2. **yml 파일 생성**
 
 ```yaml
 - .github
-	- workflow
-		-release.yml
+    - workflow
+       -release.yml
 ```
 
 3. **yml 코드 작성 Workflow file (release.yml)**
@@ -39,39 +39,44 @@ on:
 
 jobs:
   release:
-	  # 실행 환경
-    runs-on: ubuntu-latest
-
-		# steps: 작업 수행 단계입니다.
-    steps:
-	    # echo
-      - run: echo "Starting Release"
-
-			# 현재 사용 중인 Java 버전은 11 그러나 
-			# Android Gradle Plugin(com.android.application 버전 8.5.0)은 Java 17 이상을 필요
-        name: set up JDK 17
-      - uses: actions/setup-java@v4
-        with:
+     # 실행 환경
+     runs-on: ubuntu-latest
+     
+     # steps: 작업 수행 단계입니다.
+     
+     steps:
+          
+          # echo
+        - run: echo "Starting Release"
+        
+        
+        # 현재 사용 중인 Java 버전은 11 그러나 
+        # Android Gradle Plugin(com.android.application 버전 8.5.0)은 Java 17 이상을 필요
+        
+          name: set up JDK 17
+        - uses: actions/setup-java@v4
+          with:
             java-version: "17"
             distribution: "temurin" #JDK 배포판(distribution)을 temurin로
-
-				# gradlew은 파일의 루트 디렉토리에 위치해야 함
-				# checkout을 하지 않으면 gradlew을 찾지 못할 수 있음
-        name: checkout
-      - uses: actions/checkout@v4 # v4 사용
-
-				# 파일 실행 권한 부여
-        name: permissions
-      - run: chmod +x gradlew
-
-				# Dokka를 사용하여 HTML 파일을 생성
-        name: Build Documentation
-      - run: ./gradlew dokkaHtml
-
-				# 생성된 HTML 파일을 gh-pages 브랜치에 배포
-        name: Deploy Documentation to GitHub Pages
-      - uses: JamesIves/github-pages-deploy-action@v4
-        with:
+             
+             # gradlew은 파일의 루트 디렉토리에 위치해야 함
+             # checkout을 하지 않으면 gradlew을 찾지 못할 수 있음
+          name: checkout
+        - uses: actions/checkout@v4 # v4 사용
+        
+        # 파일 실행 권한 부여
+          name: permissions
+        - run: chmod +x gradlew
+        
+        # Dokka를 사용하여 HTML 파일을 생성
+          name: Build Documentation
+        - run: ./gradlew dokkaHtml
+        
+        # 생성된 HTML 파일을 gh-pages 브랜치에 배포
+          name: Deploy Documentation to GitHub Pages
+        - uses: JamesIves/github-pages-deploy-action@v4
+        
+          with:
             token: ${{ secrets.GITHUB_TOKEN }}
             branch: gh-pages # 배포 브랜치
             folder: compose/build/dokka/html # 배포하고자 하는 모듈의 html주소
