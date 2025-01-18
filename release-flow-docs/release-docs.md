@@ -63,7 +63,31 @@ versionName "1.1.0"
 
 ### 3. 배포 준비
 
-
+#### 일반적인 배포 플로우
+```mermaid
+---
+title: 일반적인 배포 플로우
+---
+gitGraph
+	commit
+	commit
+  branch develop
+	commit
+	branch featureA
+  checkout featureA
+  commit
+  commit
+	checkout develop
+	merge featureA
+	commit
+	branch deploy
+	commit tag: "for QA"
+	checkout develop
+	branch release/1.3.5
+	commit tag: "add 1.3.5.txt"
+	checkout main
+	merge release/1.3.5 tag: "run deploy workflow"
+```
 
 1. Develop 브랜치에서 Release 브랜치 생성
 
